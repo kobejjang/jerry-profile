@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jerry Jin · 진 정 환</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #171717;
+    --surface2: #1f1f1f;
+    --border: #2a2a2a;
+    --accent: #c8a96e;
+    --accent2: #4e7cff;
+    --text: #e8e8e8;
+    --text-muted: #888;
+    --text-dim: #555;
+    --ups-brown: #351c15;
+    --ups-gold: #ffb500;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── Sidebar ── */
+  .layout { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 32px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .sidebar-logo {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .avatar {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--accent), #8b5e2a);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px; font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .sidebar-name { font-weight: 600; font-size: 14px; color: var(--text); }
+  .sidebar-role { font-size: 11px; color: var(--text-muted); }
+
+  .sidebar-section {
+    margin-top: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 0 8px;
+  }
+
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+  }
+  .sidebar-item:hover, .sidebar-item.active {
+    background: var(--surface2);
+    color: var(--text);
+  }
+  .sidebar-item.active { color: var(--accent); }
+  .sidebar-icon { font-size: 15px; opacity: 0.7; }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  /* ── Main Content ── */
+  .main {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  /* Cover */
+  .cover {
+    height: 200px;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1208 30%, #2a1f0e 60%, #1a1208 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(200, 169, 110, 0.15) 0%, transparent 70%),
+                radial-gradient(ellipse at 70% 30%, rgba(78, 124, 255, 0.08) 0%, transparent 60%);
+  }
+  .cover-pattern {
+    position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg, transparent, transparent 40px,
+      rgba(200,169,110,0.04) 40px, rgba(200,169,110,0.04) 41px
+    );
+  }
+  .ups-badge {
+    position: absolute;
+    top: 20px; right: 28px;
+    background: var(--ups-gold);
+    border-radius: 8px;
+    padding: 6px 12px;
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 700; font-size: 13px;
+    color: var(--ups-brown);
+  }
+
+  /* Profile Header */
+  .profile-header {
+    padding: 0 52px 0;
+    position: relative;
+  }
+
+  .profile-pic {
+    width: 80px; height: 80px;
+    background: linear-gradient(135deg, var(--accent), #6b4423);
+    border: 4px solid var(--bg);
+    border-radius: 12px;
+    margin-top: -40px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 700;
+    color: #fff;
+    position: relative;
+    z-index: 1;
+  }
+
+  .profile-meta {
+    margin-top: 16px;
+    margin-bottom: 32px;
+  }
+
+  .profile-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .profile-name-ko {
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    letter-spacing: 0.1em;
+  }
+
+  .profile-tags {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 12px;
+  }
+
+  .tag {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid;
+  }
+  .tag-gold { background: rgba(200,169,110,0.12); border-color: rgba(200,169,110,0.35); color: var(--accent); }
+  .tag-blue { background: rgba(78,124,255,0.1); border-color: rgba(78,124,255,0.3); color: #7ea8ff; }
+  .tag-green { background: rgba(50,200,100,0.1); border-color: rgba(50,200,100,0.3); color: #5dd88a; }
+  .tag-red { background: rgba(255,80,80,0.1); border-color: rgba(255,80,80,0.3); color: #ff8888; }
+
+  /* ── Page content ── */
+  .content { padding: 0 52px 64px; max-width: 860px; }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 32px 0;
+  }
+
+  /* Properties block */
+  .props-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+
+  .prop-row {
+    display: contents;
+  }
+
+  .prop-label {
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+
+  .prop-value {
+    padding: 12px 16px;
+    font-size: 13.5px;
+    color: var(--text);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .prop-link { color: var(--accent2); text-decoration: none; }
+  .prop-link:hover { text-decoration: underline; }
+
+  /* Blocks */
+  .block-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .block-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  .callout strong { color: var(--text); }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 0; top: 8px; bottom: 8px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-bottom: 28px;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -28px; top: 6px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+  }
+
+  .timeline-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+
+  .timeline-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .timeline-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* Cards grid */
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent); }
+
+  .card-icon { font-size: 22px; margin-bottom: 10px; }
+  .card-title { font-weight: 600; font-size: 14px; color: var(--text); margin-bottom: 4px; }
+  .card-desc { font-size: 13px; color: var(--text-muted); }
+
+  /* Skills */
+  .skills-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+
+  .skill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 12.5px;
+    font-family: 'DM Mono', monospace;
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+  .skill:hover { color: var(--text); border-color: var(--accent); }
+
+  /* Contact */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .contact-item {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+  .contact-item:hover { border-color: var(--accent); }
+
+  .contact-icon { font-size: 20px; }
+  .contact-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
+  .contact-val { font-size: 13px; color: var(--text); font-weight: 500; }
+
+  /* Achievement banner */
+  .achievement {
+    background: linear-gradient(135deg, rgba(200,169,110,0.08), rgba(200,169,110,0.03));
+    border: 1px solid rgba(200,169,110,0.2);
+    border-radius: 10px;
+    padding: 20px 24px;
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 12px;
+  }
+  .achievement-icon { font-size: 28px; }
+  .achievement-text strong { color: var(--accent); display: block; font-size: 14px; }
+  .achievement-text span { font-size: 13px; color: var(--text-muted); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .profile-header { padding: 0 20px; }
+    .content { padding: 0 20px 48px; }
+    .props-grid, .cards, .contact-grid { grid-template-columns: 1fr; }
+    .profile-name { font-size: 26px; }
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .profile-meta, .content > * {
+    animation: fadeUp 0.5s ease both;
+  }
+  .content > *:nth-child(1) { animation-delay: 0.05s; }
+  .content > *:nth-child(2) { animation-delay: 0.1s; }
+  .content > *:nth-child(3) { animation-delay: 0.15s; }
+  .content > *:nth-child(4) { animation-delay: 0.2s; }
+  .content > *:nth-child(5) { animation-delay: 0.25s; }
+  .content > *:nth-child(6) { animation-delay: 0.3s; }
+  .content > *:nth-child(7) { animation-delay: 0.35s; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="avatar">J</div>
+      <div>
+        <div class="sidebar-name">Jerry Jin</div>
+        <div class="sidebar-role">진 정 환</div>
+      </div>
+    </div>
+
+    <a href="#about" class="sidebar-item active">
+      <span class="sidebar-icon">👤</span> About
+    </a>
+    <a href="#career" class="sidebar-item">
+      <span class="sidebar-icon">💼</span> Career
+    </a>
+    <a href="#ventures" class="sidebar-item">
+      <span class="sidebar-icon">🚀</span> Ventures
+    </a>
+    <a href="#education" class="sidebar-item">
+      <span class="sidebar-icon">🎓</span> Education
+    </a>
+    <a href="#skills" class="sidebar-item">
+      <span class="sidebar-icon">⚙️</span> Skills
+    </a>
+    <a href="#contact" class="sidebar-item">
+      <span class="sidebar-icon">📬</span> Contact
+    </a>
+
+    <div class="sidebar-section" style="margin-top:20px;">Links</div>
+    <a href="https://linkedin.com/in/jeonghwanjin" target="_blank" class="sidebar-item">
+      <span class="sidebar-icon">🔗</span> LinkedIn
+    </a>
+    <a href="https://www.ups.com" target="_blank" class="sidebar-item">
+      <span class="sidebar-icon">📦</span> UPS Korea
+    </a>
+
+    <div class="sidebar-footer">
+      Last updated · Feb 2026
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <!-- Cover -->
+    <div class="cover">
+      <div class="cover-pattern"></div>
+      <div class="ups-badge">🟤 UPS Korea</div>
+    </div>
+
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="profile-pic">J</div>
+      <div class="profile-meta">
+        <div class="profile-name">Jerry Jin</div>
+        <div class="profile-name-ko">진 정 환 · 한국영업 총괄이사</div>
+        <div class="profile-tags">
+          <span class="tag tag-gold">Head of Sales · UPS Korea</span>
+          <span class="tag tag-blue">3PL Founder</span>
+          <span class="tag tag-green">MIS PhD Candidate · Yonsei</span>
+          <span class="tag tag-red">Veloxis AI</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="content" id="about">
+
+      <!-- Properties -->
+      <div class="props-grid">
+        <div class="prop-label">📍 Location</div>
+        <div class="prop-value">Seoul, South Korea · 서울특별시 영등포구</div>
+        <div class="prop-label">🏢 Company</div>
+        <div class="prop-value">(주)유나이티드파슬서비스코리아 · UPS Korea</div>
+        <div class="prop-label">📌 Title</div>
+        <div class="prop-value">한국영업 총괄이사 — Commercial & Sales</div>
+        <div class="prop-label">📧 Work Email</div>
+        <div class="prop-value"><a href="mailto:jinjerry@ups.com" class="prop-link">jinjerry@ups.com</a></div>
+        <div class="prop-label">🔗 LinkedIn</div>
+        <div class="prop-value"><a href="https://linkedin.com/in/jeonghwanjin" target="_blank" class="prop-link">linkedin.com/in/jeonghwanjin</a></div>
+        <div class="prop-label">📱 Personal</div>
+        <div class="prop-value">+82 10-5363-0582</div>
+      </div>
+
+      <!-- Callout -->
+      <div class="callout">
+        🌏 <strong>Logistics leader & entrepreneur</strong> driving international trade across APAC. Currently heading commercial sales at UPS Korea, founding a 3PL + e-commerce fulfillment company, pursuing an MIS PhD at Yonsei University, and operating <strong>Veloxis AI</strong> — a bilingual AI services firm. Speaker at Amazon, Shopify, and AMCHAM Korea events.
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Career -->
+      <div id="career">
+        <div class="block-title">Career</div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-year">2024 – Present</div>
+            <div class="timeline-title">Head of Sales — Commercial & Sales</div>
+            <div class="timeline-sub">UPS Korea · 40 direct reports · Seoul</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2020 – 2023</div>
+            <div class="timeline-title">Enterprise & Global Account Manager, APAC</div>
+            <div class="timeline-sub">UPS Korea · 🏆 Global Sales World of Champion Gold Top 0.1% (2020)</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2019 – 2020</div>
+            <div class="timeline-title">Marketing Supervisor</div>
+            <div class="timeline-sub">UPS Korea · Seoul</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2011 – 2018</div>
+            <div class="timeline-title">Account Management · SAP ERP Projects</div>
+            <div class="timeline-sub">adidas Korea · Seoul</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2025</div>
+            <div class="timeline-title">Management Consultant</div>
+            <div class="timeline-sub">PWC × Hyundai Motors · Seoul</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Achievements -->
+      <div>
+        <div class="block-title">Achievements</div>
+        <div class="achievement">
+          <div class="achievement-icon">🥇</div>
+          <div class="achievement-text">
+            <strong>UPS Global Sales World of Champion · Gold · Top 0.1%</strong>
+            <span>2020 · APAC Region Award Winner</span>
+          </div>
+        </div>
+        <div class="achievement">
+          <div class="achievement-icon">🎤</div>
+          <div class="achievement-text">
+            <strong>Industry Speaker · Amazon · Shopify · AMCHAM Korea</strong>
+            <span>International logistics, e-commerce, and AI strategy</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Ventures -->
+      <div id="ventures">
+        <div class="block-title">Ventures</div>
+        <div class="cards">
+          <div class="card">
+            <div class="card-icon">🏗️</div>
+            <div class="card-title">3PL Freight Forwarding & Fulfillment</div>
+            <div class="card-desc">Seoul-based startup providing international shipping and e-commerce fulfillment services to Korean manufacturers and exporters.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🤖</div>
+            <div class="card-title">Veloxis AI</div>
+            <div class="card-desc">Bilingual (KO/EN) AI services company providing enterprise automation, consulting, and AI integration for Korean & global clients.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">📊</div>
+            <div class="card-title">Data Driven Distributor</div>
+            <div class="card-desc">Consulting platform for global supply chain management, combining logistics expertise with advanced data analytics.</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🏢</div>
+            <div class="card-title">Seoul Real Estate</div>
+            <div class="card-desc">Active investor focusing on 84㎡ apartment opportunities in Yeongdeungpo-gu with reconstruction upside potential.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Education -->
+      <div id="education">
+        <div class="block-title">Education</div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-year">2025 – Present</div>
+            <div class="timeline-title">Master's / PhD · Management Information Systems</div>
+            <div class="timeline-sub">Yonsei University · Seoul · 연세대학교</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2003 – 2011</div>
+            <div class="timeline-title">B.A. Economics</div>
+            <div class="timeline-sub">Yonsei University · 연세대학교</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2010</div>
+            <div class="timeline-title">Minor · Sports Management</div>
+            <div class="timeline-sub">University of Akron · Ohio, USA</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2008 – 2009</div>
+            <div class="timeline-title">Business Studies</div>
+            <div class="timeline-sub">City College San Francisco · California, USA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Skills -->
+      <div id="skills">
+        <div class="block-title">Technical Skills</div>
+        <div class="skills-wrap">
+          <span class="skill">Salesforce CRM</span>
+          <span class="skill">Power BI</span>
+          <span class="skill">Oracle BI / DWH</span>
+          <span class="skill">SAP SD</span>
+          <span class="skill">Google Analytics</span>
+          <span class="skill">Python</span>
+          <span class="skill">Excel / VBA</span>
+          <span class="skill">SQL</span>
+          <span class="skill">AI Automation</span>
+          <span class="skill">Logistics Analytics</span>
+          <span class="skill">B2B Sales Strategy</span>
+          <span class="skill">APAC Trade Lanes</span>
+          <span class="skill">E-commerce Fulfillment</span>
+          <span class="skill">Freight Forwarding</span>
+          <span class="skill">Korean / English</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Contact -->
+      <div id="contact">
+        <div class="block-title">Contact</div>
+        <div class="contact-grid">
+          <a href="mailto:jinjerry@ups.com" class="contact-item">
+            <span class="contact-icon">📧</span>
+            <div>
+              <div class="contact-label">Work Email</div>
+              <div class="contact-val">jinjerry@ups.com</div>
+            </div>
+          </a>
+          <a href="mailto:0383242@gmail.com" class="contact-item">
+            <span class="contact-icon">✉️</span>
+            <div>
+              <div class="contact-label">Personal Email</div>
+              <div class="contact-val">0383242@gmail.com</div>
+            </div>
+          </a>
+          <a href="tel:+821053630582" class="contact-item">
+            <span class="contact-icon">📱</span>
+            <div>
+              <div class="contact-label">Personal</div>
+              <div class="contact-val">+82 10-5363-0582</div>
+            </div>
+          </a>
+          <a href="tel:+821048500781" class="contact-item">
+            <span class="contact-icon">☎️</span>
+            <div>
+              <div class="contact-label">Company</div>
+              <div class="contact-val">+82 10-4850-0781</div>
+            </div>
+          </a>
+          <a href="https://linkedin.com/in/jeonghwanjin" target="_blank" class="contact-item">
+            <span class="contact-icon">🔗</span>
+            <div>
+              <div class="contact-label">LinkedIn</div>
+              <div class="contact-val">linkedin.com/in/jeonghwanjin</div>
+            </div>
+          </a>
+          <div class="contact-item">
+            <span class="contact-icon">📍</span>
+            <div>
+              <div class="contact-label">Office Address</div>
+              <div class="contact-val">서울 영등포구 문래로 94-3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end .content -->
+  </main>
+</div>
+
+<script>
+  // Smooth scroll for sidebar links
+  document.querySelectorAll('.sidebar-item[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
+
+  // Highlight active section on scroll
+  const sections = document.querySelectorAll('[id]');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+        const active = document.querySelector(`.sidebar-item[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
